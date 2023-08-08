@@ -18,12 +18,27 @@ jobs:
       - name: Install deps
         run: |
           apt-get --no-install-recommends -y install git
+
       - name: Clone repository
         uses: actions/checkout@v2
         with:
           submodules: recursive
+
+      - name: Show nrfutil details
+        run: |
+          nrfutil --version
+          nrfutil list
+          nrfutil toolchain-manager list
+
       - name: Build ZSWatch Binaries
-        run: west build --board ${{ matrix.board }} app
+        working-directory: app
+        run: |
+          pwd
+          ls -la
+          printenv
+          nrfutil toolchain-manager launch /bin/bash -- -c '\
+            west build -b ${{ matrix.board }} \
+          '
 
   Posix:
     name: Posix build
